@@ -1,4 +1,4 @@
-# godot-FastNoiseSIMD
+# Godot FastNoiseSIMD
 This repository provides a module for [Godot Engine](https://github.com/godotengine/godot/) that wraps the [FastNoiseSIMD](https://github.com/Auburns/FastNoiseSIMD) library.
 
 It automatically detects the highest SIMD level available at runtime. It does not require SIMD to build or run, so you can use it in your games that will run on systems that don't support SIMD.
@@ -45,8 +45,8 @@ These SIMD instruction sets are supported.
 ## How To Use
 
 1. Go to the modules folder in your Godot source: `cd ~/godot/modules`
-1. Clone this repository: `git clone https://github.com/tinmanjuggernaut/godot-FastNoiseSIMD.git`
-1. Rename the folder to `fastnoise_simd`: `mv godot-FastNoiseSIMD fastnoise_simd`
+1. Clone this repository: `git clone https://github.com/tinmanjuggernaut/godot_fastnoise_simd.git`
+1. Rename the folder to `fastnoise_simd`: `mv godot_fastnoise_simd fastnoise_simd`
 1. Rebuild Godot.
 1. Now when creating a new `Noise` object, such as in a texture, you should see FastNoiseSIMD along with the others. You can also view the online help and search FastNoiseSIMD.
 
