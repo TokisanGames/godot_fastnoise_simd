@@ -1,5 +1,5 @@
 # Godot FastNoiseSIMD
-This repository provides a module for [Godot Engine](https://github.com/godotengine/godot/) that wraps the [FastNoiseSIMD](https://github.com/Auburns/FastNoiseSIMD) library.
+This repository provides a module for [Godot Engine](https://github.com/godotengine/godot/) 3.2 that wraps the [FastNoiseSIMD](https://github.com/Auburns/FastNoiseSIMD) library.
 
 It automatically detects the highest SIMD level available at runtime. It does not require SIMD to build or run, so you can use it in your games that will run on systems that don't support SIMD.
 
@@ -22,6 +22,9 @@ Plus these features:
 * Easy to use 3D cave noise (Cellular: Div2Cave)
 
 ## Supported Compilers & Systems
+
+This module works with Godot 3.2 with [PR #35144] (https://github.com/godotengine/godot/pull/35144) which has not yet been merged. It will eventually be updated to build for 4.0.
+
 While FastNoiseSIMD does not require a processor that supports SIMD to run or build, it does require a modern compiler that supports SIMD instructions.
 
 FastNosieSIMD has been tested on these compilers:
