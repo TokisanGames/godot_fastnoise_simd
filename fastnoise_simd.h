@@ -136,9 +136,9 @@ public:
 
 	// Allocate PoolVectors for GDScript
 
-	PoolVector<float> _b_get_noise_set_1d(float p_x, int p_sizex, float p_scale = 0.0f);
-	PoolVector<float> _b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale = 0.0f);
-	PoolVector<float> _b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale = 0.0f);
+	Vector<float> _b_get_noise_set_1d(float p_x, int p_sizex, float p_scale = 0.0f);
+	Vector<float> _b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale = 0.0f);
+	Vector<float> _b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale = 0.0f);
 
 	// Perturb texture coordinates within the noise functions
 
@@ -186,7 +186,7 @@ public:
 	CellularReturnType get_cellular_return_type() const;
 
 	void set_cellular_distance2_indices(int p_index0, int p_index1);
-	PoolIntArray get_cellular_distance2_indices() const;
+	PackedInt32Array get_cellular_distance2_indices() const;
 
 	void set_cellular_distance2_index0(int p_index0); // Editor helpers
 	int get_cellular_distance2_index0() const;

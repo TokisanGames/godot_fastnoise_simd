@@ -210,42 +210,42 @@ void FastNoiseSIMD::free_noise_set(float * p_set) {
 
 // Allocate PoolVectors for GDScript
 
-PoolVector<float> FastNoiseSIMD::_b_get_noise_set_1d(float p_x, int p_sizex, float p_scale) {
+Vector<float> FastNoiseSIMD::_b_get_noise_set_1d(float p_x, int p_sizex, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
 	float* ns = _noise->GetNoiseSet(0.f, 0.f, p_x + _offset.x, 1.f, 1.f, p_sizex, scale);
 
-	PoolVector<float> pv;
+	Vector<float> pv;
 	pv.resize(p_sizex);
-	PoolVector<float>::Write wr = pv.write();
-	memcpy(wr.ptr(), ns, p_sizex * sizeof(float));
+	float* wr = pv.ptrw();
+	memcpy(wr, ns, p_sizex * sizeof(float));
 
 	_noise->FreeNoiseSet(ns);
 	return pv;
 }
 
-PoolVector<float> FastNoiseSIMD::_b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale) {
+Vector<float> FastNoiseSIMD::_b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
 	float* ns = _noise->GetNoiseSet(p_v.x + _offset.x, 0.f, p_v.y + _offset.y, p_size.x, 1.f, p_size.y, scale);
 
-	PoolVector<float> pv;
+	Vector<float> pv;
 	int size = p_size.x * p_size.y;
 	pv.resize(size);
-	PoolVector<float>::Write wr = pv.write();
-	memcpy(wr.ptr(), ns, size * sizeof(float));
+	float* wr = pv.ptrw();
+	memcpy(wr, ns, size * sizeof(float));
 
 	_noise->FreeNoiseSet(ns);
 	return pv;
 }
 
-PoolVector<float> FastNoiseSIMD::_b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale) {
+Vector<float> FastNoiseSIMD::_b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
 	float* ns = _noise->GetNoiseSet(p_v.x + _offset.x, p_v.y + _offset.y, p_v.z + _offset.z, p_size.x, p_size.y, p_size.z, scale);
 	
-	PoolVector<float> pv;
+	Vector<float> pv;
 	int size = p_size.x * p_size.y * p_size.z;
 	pv.resize(size);
-	PoolVector<float>::Write wr = pv.write();
-	memcpy(wr.ptr(), ns, size * sizeof(float));
+	float* wr = pv.ptrw();
+	memcpy(wr, ns, size * sizeof(float));
 	
 	_noise->FreeNoiseSet(ns);
 	return pv;
@@ -396,8 +396,8 @@ void FastNoiseSIMD::set_cellular_distance2_indices(int p_index0, int p_index1) {
 	emit_changed();
 }
 
-PoolIntArray FastNoiseSIMD::get_cellular_distance2_indices() const {
-	PoolIntArray a;
+PackedInt32Array FastNoiseSIMD::get_cellular_distance2_indices() const {
+	PackedInt32Array a;
 	a.append(_cell_dist_index0);
 	a.append(_cell_dist_index1);
 	return a;
@@ -452,10 +452,10 @@ float FastNoiseSIMD::get_cellular_noise_lookup_frequency() const {
 
 Ref<Image> FastNoiseSIMD::get_image(int p_width, int p_height, bool p_invert) {
 
-	PoolVector<uint8_t> data;
+	Vector<uint8_t> data;
 	data.resize(p_width * p_height * 4);
 
-	PoolVector<uint8_t>::Write wd8 = data.write();
+	uint8_t *wd8 = data.ptrw();
 
 	float *noise_set = get_noise_set_2d(0.0, 0.0, p_width, p_height);
 
@@ -515,7 +515,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_frequency", "freq"), &FastNoiseSIMD::set_frequency);
 	ClassDB::bind_method(D_METHOD("get_frequency"), &FastNoiseSIMD::get_frequency);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "frequency"), "set_frequency", "get_frequency");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "frequency"), "set_frequency", "get_frequency");
 
 	ClassDB::bind_method(D_METHOD("set_offset", "offset"), &FastNoiseSIMD::set_offset);
 	ClassDB::bind_method(D_METHOD("get_offset"), &FastNoiseSIMD::get_offset);
@@ -527,7 +527,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_scale", "scale"), &FastNoiseSIMD::set_scale);
 	ClassDB::bind_method(D_METHOD("get_scale"), &FastNoiseSIMD::get_scale);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "scale"), "set_scale", "get_scale");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "scale"), "set_scale", "get_scale");
 
 	ClassDB::bind_method(D_METHOD("set_simd_level", "simd_level"), &FastNoiseSIMD::set_simd_level);
 	ClassDB::bind_method(D_METHOD("get_simd_level"), &FastNoiseSIMD::get_simd_level);
@@ -552,11 +552,11 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_perturb_amplitude", "amp"), &FastNoiseSIMD::set_perturb_amplitude);
 	ClassDB::bind_method(D_METHOD("get_perturb_amplitude"), &FastNoiseSIMD::get_perturb_amplitude);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "perturb_amplitude"), "set_perturb_amplitude", "get_perturb_amplitude");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "perturb_amplitude"), "set_perturb_amplitude", "get_perturb_amplitude");
 
 	ClassDB::bind_method(D_METHOD("set_perturb_frequency", "freq"), &FastNoiseSIMD::set_perturb_frequency);
 	ClassDB::bind_method(D_METHOD("get_perturb_frequency"), &FastNoiseSIMD::get_perturb_frequency);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "perturb_frequency"), "set_perturb_frequency", "get_perturb_frequency");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "perturb_frequency"), "set_perturb_frequency", "get_perturb_frequency");
 
 	ClassDB::bind_method(D_METHOD("set_perturb_fractal_octaves", "octaves"), &FastNoiseSIMD::set_perturb_fractal_octaves);
 	ClassDB::bind_method(D_METHOD("get_perturb_fractal_octaves"), &FastNoiseSIMD::get_perturb_fractal_octaves);
@@ -564,15 +564,15 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_perturb_fractal_lacunarity", "lacunarity"), &FastNoiseSIMD::set_perturb_fractal_lacunarity);
 	ClassDB::bind_method(D_METHOD("get_perturb_fractal_lacunarity"), &FastNoiseSIMD::get_perturb_fractal_lacunarity);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "perturb_fractal_lacunarity"), "set_perturb_fractal_lacunarity", "get_perturb_fractal_lacunarity");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "perturb_fractal_lacunarity"), "set_perturb_fractal_lacunarity", "get_perturb_fractal_lacunarity");
 
 	ClassDB::bind_method(D_METHOD("set_perturb_fractal_gain", "gain"), &FastNoiseSIMD::set_perturb_fractal_gain);
 	ClassDB::bind_method(D_METHOD("get_perturb_fractal_gain"), &FastNoiseSIMD::get_perturb_fractal_gain);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "perturb_fractal_gain"), "set_perturb_fractal_gain", "get_perturb_fractal_gain");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "perturb_fractal_gain"), "set_perturb_fractal_gain", "get_perturb_fractal_gain");
 
 	ClassDB::bind_method(D_METHOD("set_perturb_normalize_length", "length"), &FastNoiseSIMD::set_perturb_normalize_length);
 	ClassDB::bind_method(D_METHOD("get_perturb_normalize_length"), &FastNoiseSIMD::get_perturb_normalize_length);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "perturb_normalize_length"), "set_perturb_normalize_length", "get_perturb_normalize_length");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "perturb_normalize_length"), "set_perturb_normalize_length", "get_perturb_normalize_length");
 
 	// Fractal
 
@@ -586,11 +586,11 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_fractal_lacunarity", "lacunarity"), &FastNoiseSIMD::set_fractal_lacunarity);
 	ClassDB::bind_method(D_METHOD("get_fractal_lacunarity"), &FastNoiseSIMD::get_fractal_lacunarity);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "fractal_lacunarity"), "set_fractal_lacunarity", "get_fractal_lacunarity");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fractal_lacunarity"), "set_fractal_lacunarity", "get_fractal_lacunarity");
 
 	ClassDB::bind_method(D_METHOD("set_fractal_gain", "gain"), &FastNoiseSIMD::set_fractal_gain);
 	ClassDB::bind_method(D_METHOD("get_fractal_gain"), &FastNoiseSIMD::get_fractal_gain);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "fractal_gain"), "set_fractal_gain", "get_fractal_gain");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fractal_gain"), "set_fractal_gain", "get_fractal_gain");
 
 	// Cellular
 
@@ -600,7 +600,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_cellular_jitter", "jitter"), &FastNoiseSIMD::set_cellular_jitter);
 	ClassDB::bind_method(D_METHOD("get_cellular_jitter"), &FastNoiseSIMD::get_cellular_jitter);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "cellular_jitter"), "set_cellular_jitter", "get_cellular_jitter");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cellular_jitter"), "set_cellular_jitter", "get_cellular_jitter");
 
 	ClassDB::bind_method(D_METHOD("set_cellular_return_type", "type"), &FastNoiseSIMD::set_cellular_return_type);
 	ClassDB::bind_method(D_METHOD("get_cellular_return_type"), &FastNoiseSIMD::get_cellular_return_type);
@@ -629,7 +629,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_cellular_noise_lookup_frequency", "freq"), &FastNoiseSIMD::set_cellular_noise_lookup_frequency);
 	ClassDB::bind_method(D_METHOD("get_cellular_noise_lookup_frequency"), &FastNoiseSIMD::get_cellular_noise_lookup_frequency);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "cellular_noise_lookup_frequency"), "set_cellular_noise_lookup_frequency", "get_cellular_noise_lookup_frequency");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cellular_noise_lookup_frequency"), "set_cellular_noise_lookup_frequency", "get_cellular_noise_lookup_frequency");
 
 	// Textures
 
