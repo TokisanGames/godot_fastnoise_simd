@@ -33,9 +33,9 @@
 
 // Simplex is disabled as it is protected by a patent until 2022-01-08.
 // https://patents.google.com/patent/US6867776
-// The patent covers using the algorithm for generating seamless textures.
+// The patent covers using the algorithm for generating textures with specific qualities.
 // Uncomment the line below to enable it and use at your own risk.
-//#define ENABLE_SIMPLEX
+#define ENABLE_SIMPLEX
 
 #if defined(__arm__) || defined(__aarch64__)
 #define FN_ARM
