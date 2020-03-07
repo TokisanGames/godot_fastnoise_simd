@@ -13,7 +13,7 @@ These noise algorithms are provided:
 * Cubic Noise 3D
 * White Noise 3D
 * Cellular Noise 3D
-* Simplex Noise 3D (Uncomment `//#define ENABLE_SIMPLEX` in `thirdparty/FastNoiseSIMD.h` to enable.)
+* Simplex Noise 3D (Enabled by default, see `thirdparty/FastNoiseSIMD.h` to disable or learn about patent issue.)
 
 Plus these features:
 * Multiple fractal options for all of the above
