@@ -9,8 +9,7 @@ thirdparty_dir = "thirdparty/"
 
 thirdparty_sources = [
     "FastNoiseSIMD.cpp",
-    "FastNoiseSIMD_internal.cpp",
-    "FastNoiseSIMD_neon.cpp"
+    "FastNoiseSIMD_internal.cpp"
 ]
 
 thirdparty_sources_sse2 = [
@@ -30,6 +29,7 @@ thirdparty_sources_avx512 = [
 ]
 
 thirdparty_sources_arm = [
+    "FastNoiseSIMD_neon.cpp",
     "ARM/cpu-features.c"
 ]
 
@@ -77,11 +77,14 @@ else:
 env_thirdparty.add_source_files(env.modules_sources, thirdparty_sources)
 env_thirdparty_sse2.add_source_files(env.modules_sources, thirdparty_sources_sse2)
 env_thirdparty_sse4.add_source_files(env.modules_sources, thirdparty_sources_sse4)
-env_thirdparty_avx2.add_source_files(env.modules_sources, thirdparty_sources_avx2)
-env_thirdparty_avx512.add_source_files(env.modules_sources, thirdparty_sources_avx512)
 
 if env["platform"] == 'android':
+    # Both Android and IOS have ARM chips, but only android build tools have necessary headers
     env_thirdparty_arm.add_source_files(env.modules_sources, thirdparty_sources_arm)
+elif env["platform"] == 'windows' or env["platform"] == 'x11' or env["platform"] == 'osx':
+    # AVX is supported on desktop only
+    env_thirdparty_avx2.add_source_files(env.modules_sources, thirdparty_sources_avx2)
+    env_thirdparty_avx512.add_source_files(env.modules_sources, thirdparty_sources_avx512)
 
 env_noise.add_source_files(env.modules_sources, "*.cpp")
 
