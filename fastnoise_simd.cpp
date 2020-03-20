@@ -134,16 +134,16 @@ int FastNoiseSIMD::get_simd_level() const {
 
 // Noise singular value functions
 
-float FastNoiseSIMD::get_noise_1d(float p_x) {
-	return get_noise_3d(0.0, 0.0, p_x);
+float FastNoiseSIMD::get_noise_1d(float p_z) {
+	return get_noise_3d(0.0, 0.0, p_z);
 }
 
 float FastNoiseSIMD::get_noise_2dv(Vector2 p_v) {
 	return get_noise_3d(p_v.x, 0.0, p_v.y);
 }
 
-float FastNoiseSIMD::get_noise_2d(float p_x, float p_y) {
-	return get_noise_3d(p_x, 0.0, p_y);
+float FastNoiseSIMD::get_noise_2d(float p_x, float p_z) {
+	return get_noise_3d(p_x, 0.0, p_z);
 }
 
 float FastNoiseSIMD::get_noise_3dv(Vector3 p_v) {
@@ -159,65 +159,65 @@ float FastNoiseSIMD::get_noise_3d(float p_x, float p_y, float p_z) {
 
 // Noise set functions
 
-float *FastNoiseSIMD::get_noise_set_1d(float p_x, int p_sizex) {
-	return get_noise_set_3d(0.0, 0.0, p_x, 1.0, 1.0, p_sizex);
+float *FastNoiseSIMD::get_noise_set_1d(float p_z, int p_sizez, float p_scale) {
+	return get_noise_set_3d(0.0, 0.0, p_z, 1.0, 1.0, p_sizez, p_scale);
 }
 
-float *FastNoiseSIMD::get_noise_set_2dv(Vector2 p_v, Vector2 p_size) {
-	return get_noise_set_3d(p_v.x, 0.0, p_v.y, p_size.x, 1.0, p_size.y);
+float *FastNoiseSIMD::get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale) {
+	return get_noise_set_3d(p_v.x, 0.0, p_v.y, p_size.x, 1.0, p_size.y, p_scale);
 }
 
-float *FastNoiseSIMD::get_noise_set_2d(float p_x, float p_y, int p_sizex, int p_sizey) {
-	return get_noise_set_3d(p_x, 0.0, p_y, p_sizex, 1.0, p_sizey);
+float *FastNoiseSIMD::get_noise_set_2d(float p_x, float p_z, int p_sizex, int p_sizez, float p_scale) {
+	return get_noise_set_3d(p_x, 0.0, p_z, p_sizex, 1.0, p_sizez, p_scale);
 }
 
-float *FastNoiseSIMD::get_noise_set_3dv(Vector3 p_v, Vector3 p_size) {
-	return get_noise_set_3d(p_v.x, p_v.y, p_v.z, p_size.x, p_size.y, p_size.z);
+float *FastNoiseSIMD::get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale) {
+	return get_noise_set_3d(p_v.x, p_v.y, p_v.z, p_size.x, p_size.y, p_size.z, p_scale);
 }
 
 float *FastNoiseSIMD::get_noise_set_3d(int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale) {
-	float* ns;
+	float *ns;
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
 	ns = _noise->GetNoiseSet(p_x + _offset.x, p_y + _offset.y, p_z + _offset.z, p_sizex, p_sizey, p_sizez, scale);
 	_allocated_sets.push_back(ns);
 	return ns;
 }
 
-float* FastNoiseSIMD::get_empty_set_3dv(Vector3 p_size) {
+float *FastNoiseSIMD::get_empty_set_3dv(Vector3 p_size) {
 	return get_empty_set(p_size.x * p_size.y * p_size.z);
 }
 
-float* FastNoiseSIMD::get_empty_set(int p_size) {
-	float* set = _noise->GetEmptySet(p_size);
+float *FastNoiseSIMD::get_empty_set(int p_size) {
+	float *set = _noise->GetEmptySet(p_size);
 	_allocated_sets.push_back(set);
 	return set;
 }
 
-void FastNoiseSIMD::fill_noise_set_3dv(float* p_set, Vector3 p_v, Vector3 p_size, float p_scale) {
+void FastNoiseSIMD::fill_noise_set_3dv(float *p_set, Vector3 p_v, Vector3 p_size, float p_scale) {
 	fill_noise_set_3d(p_set, p_v.x, p_v.y, p_v.z, p_size.x, p_size.y, p_size.z, p_scale);
 }
 
-void FastNoiseSIMD::fill_noise_set_3d(float* p_set, int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale) {
+void FastNoiseSIMD::fill_noise_set_3d(float *p_set, int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
 	_noise->FillNoiseSet(p_set, p_x + _offset.x, p_y + _offset.y, p_z + _offset.z, p_sizex, p_sizey, p_sizez, scale);
 	return;
 }
 
-void FastNoiseSIMD::free_noise_set(float * p_set) {
+void FastNoiseSIMD::free_noise_set(float *p_set) {
 	_allocated_sets.erase(p_set);
 	_noise->FreeNoiseSet(p_set);
 }
 
 // Allocate PoolVectors for GDScript
 
-Vector<float> FastNoiseSIMD::_b_get_noise_set_1d(float p_x, int p_sizex, float p_scale) {
+Vector<float> FastNoiseSIMD::_b_get_noise_set_1d(float p_z, int p_sizez, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
-	float* ns = _noise->GetNoiseSet(0.f, 0.f, p_x + _offset.x, 1.f, 1.f, p_sizex, scale);
+	float *ns = _noise->GetNoiseSet(0.f, 0.f, p_z + _offset.z, 1.f, 1.f, p_sizez, scale);
 
 	Vector<float> pv;
-	pv.resize(p_sizex);
-	float* wr = pv.ptrw();
-	memcpy(wr, ns, p_sizex * sizeof(float));
+	pv.resize(p_sizez);
+	float *wr = pv.ptrw();
+	memcpy(wr, ns, p_sizez * sizeof(float));
 
 	_noise->FreeNoiseSet(ns);
 	return pv;
@@ -225,12 +225,12 @@ Vector<float> FastNoiseSIMD::_b_get_noise_set_1d(float p_x, int p_sizex, float p
 
 Vector<float> FastNoiseSIMD::_b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
-	float* ns = _noise->GetNoiseSet(p_v.x + _offset.x, 0.f, p_v.y + _offset.y, p_size.x, 1.f, p_size.y, scale);
+	float *ns = _noise->GetNoiseSet(p_v.x + _offset.x, 0.f, p_v.y + _offset.z, p_size.x, 1.f, p_size.y, scale);
 
 	Vector<float> pv;
 	int size = p_size.x * p_size.y;
 	pv.resize(size);
-	float* wr = pv.ptrw();
+	float *wr = pv.ptrw();
 	memcpy(wr, ns, size * sizeof(float));
 
 	_noise->FreeNoiseSet(ns);
@@ -239,14 +239,14 @@ Vector<float> FastNoiseSIMD::_b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, f
 
 Vector<float> FastNoiseSIMD::_b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale) {
 	float scale = (p_scale == 0.0) ? _scale : p_scale;
-	float* ns = _noise->GetNoiseSet(p_v.x + _offset.x, p_v.y + _offset.y, p_v.z + _offset.z, p_size.x, p_size.y, p_size.z, scale);
-	
+	float *ns = _noise->GetNoiseSet(p_v.x + _offset.x, p_v.y + _offset.y, p_v.z + _offset.z, p_size.x, p_size.y, p_size.z, scale);
+
 	Vector<float> pv;
 	int size = p_size.x * p_size.y * p_size.z;
 	pv.resize(size);
-	float* wr = pv.ptrw();
+	float *wr = pv.ptrw();
 	memcpy(wr, ns, size * sizeof(float));
-	
+
 	_noise->FreeNoiseSet(ns);
 	return pv;
 }
@@ -377,20 +377,23 @@ FastNoiseSIMD::CellularReturnType FastNoiseSIMD::get_cellular_return_type() cons
 
 void FastNoiseSIMD::set_cellular_distance2_indices(int p_index0, int p_index1) {
 	// Valid range for index1: 1-3
-	if (p_index1 > 3)
+	if (p_index1 > 3) {
 		_cell_dist_index1 = 3;
-	else if (p_index1 < 1)
+	} else if (p_index1 < 1) {
 		_cell_dist_index1 = 1;
-	else
+	} else {
 		_cell_dist_index1 = p_index1;
+	}
 
 	// Valid range for index0: 0-2 and < index1
 	_cell_dist_index0 = p_index0;
-	if (_cell_dist_index0 >= _cell_dist_index1)
+	if (_cell_dist_index0 >= _cell_dist_index1) {
 		_cell_dist_index0 = _cell_dist_index1 - 1;
+	}
 
-	if (_cell_dist_index0 < 0)
+	if (_cell_dist_index0 < 0) {
 		_cell_dist_index0 = 0;
+	}
 
 	_noise->SetCellularDistance2Indices(_cell_dist_index0, _cell_dist_index1);
 	emit_changed();
@@ -457,33 +460,32 @@ Ref<Image> FastNoiseSIMD::get_image(int p_width, int p_height, bool p_invert) {
 
 	uint8_t *wd8 = data.ptrw();
 
-	float *noise_set = get_noise_set_2d(0.0, 0.0, p_width, p_height);
+	float *noise_set = get_noise_set_2d(0.0, 0.0, p_height, p_width);
 
 	// Get all values and identify min/max values
 	float min_val = 100;
 	float max_val = -100;
 
-	for (int i = 0, x = 0; i < p_height; i++) {
-		for (int j = 0; j < p_width; j++, x++) {
-			if (noise_set[x] > max_val)
-				max_val = noise_set[x];
-			if (noise_set[x] < min_val)
-				min_val = noise_set[x];
+	for (int i = 0; i < p_width * p_height; i++) {
+		if (noise_set[i] > max_val) {
+			max_val = noise_set[i];
+		}
+		if (noise_set[i] < min_val) {
+			min_val = noise_set[i];
 		}
 	}
 
 	// Normalize values and write to texture
 	if (max_val != min_val) {
-		for (int i = 0, x = 0; i < p_height; i++) {
-			for (int j = 0; j < p_width; j++, x++) {
-				uint8_t value = uint8_t((noise_set[x] - min_val) / (max_val - min_val) * 255.f);
-				if (p_invert)
-					value = 255 - value;
-				wd8[(i * p_width + j) * 4 + 0] = value;
-				wd8[(i * p_width + j) * 4 + 1] = value;
-				wd8[(i * p_width + j) * 4 + 2] = value;
-				wd8[(i * p_width + j) * 4 + 3] = 255;
+		for (int x = 0; x < p_width * p_height; x++) {
+			uint8_t value = uint8_t((noise_set[x] - min_val) / (max_val - min_val) * 255.f);
+			if (p_invert) {
+				value = 255 - value;
 			}
+			wd8[x * 4 + 0] = value;
+			wd8[x * 4 + 1] = value;
+			wd8[x * 4 + 2] = value;
+			wd8[x * 4 + 3] = 255;
 		}
 	}
 
@@ -515,7 +517,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_frequency", "freq"), &FastNoiseSIMD::set_frequency);
 	ClassDB::bind_method(D_METHOD("get_frequency"), &FastNoiseSIMD::get_frequency);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "frequency"), "set_frequency", "get_frequency");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "frequency", PROPERTY_HINT_RANGE, "0.001,1"), "set_frequency", "get_frequency");
 
 	ClassDB::bind_method(D_METHOD("set_offset", "offset"), &FastNoiseSIMD::set_offset);
 	ClassDB::bind_method(D_METHOD("get_offset"), &FastNoiseSIMD::get_offset);
@@ -534,13 +536,13 @@ void FastNoiseSIMD::_bind_methods() {
 
 	// Noise functions
 
-	ClassDB::bind_method(D_METHOD("get_noise_1d", "x"), &FastNoiseSIMD::get_noise_1d);
+	ClassDB::bind_method(D_METHOD("get_noise_1d", "z"), &FastNoiseSIMD::get_noise_1d);
 	ClassDB::bind_method(D_METHOD("get_noise_2dv", "v"), &FastNoiseSIMD::get_noise_2dv);
-	ClassDB::bind_method(D_METHOD("get_noise_2d", "x", "y"), &FastNoiseSIMD::get_noise_2d);
+	ClassDB::bind_method(D_METHOD("get_noise_2d", "x", "z"), &FastNoiseSIMD::get_noise_2d);
 	ClassDB::bind_method(D_METHOD("get_noise_3dv", "v"), &FastNoiseSIMD::get_noise_3dv);
 	ClassDB::bind_method(D_METHOD("get_noise_3d", "x", "y", "z"), &FastNoiseSIMD::get_noise_3d);
 
-	ClassDB::bind_method(D_METHOD("get_noise_set_1d", "x", "size", "scale"), &FastNoiseSIMD::_b_get_noise_set_1d, DEFVAL(0.0f));
+	ClassDB::bind_method(D_METHOD("get_noise_set_1d", "z", "size", "scale"), &FastNoiseSIMD::_b_get_noise_set_1d, DEFVAL(0.0f));
 	ClassDB::bind_method(D_METHOD("get_noise_set_2dv", "v", "size", "scale"), &FastNoiseSIMD::_b_get_noise_set_2dv, DEFVAL(0.0f));
 	ClassDB::bind_method(D_METHOD("get_noise_set_3dv", "v", "size", "scale"), &FastNoiseSIMD::_b_get_noise_set_3dv, DEFVAL(0.0f));
 
@@ -578,7 +580,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_fractal_type", "type"), &FastNoiseSIMD::set_fractal_type);
 	ClassDB::bind_method(D_METHOD("get_fractal_type"), &FastNoiseSIMD::get_fractal_type);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "fractal_type", PROPERTY_HINT_ENUM, "FBM,Billow,RigidMulti"), "set_fractal_type", "get_fractal_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "fractal_type", PROPERTY_HINT_ENUM, "FBM,Billow,RidgedMulti"), "set_fractal_type", "get_fractal_type");
 
 	ClassDB::bind_method(D_METHOD("set_fractal_octaves", "octaves"), &FastNoiseSIMD::set_fractal_octaves);
 	ClassDB::bind_method(D_METHOD("get_fractal_octaves"), &FastNoiseSIMD::get_fractal_octaves);
@@ -631,8 +633,6 @@ void FastNoiseSIMD::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_cellular_noise_lookup_frequency"), &FastNoiseSIMD::get_cellular_noise_lookup_frequency);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cellular_noise_lookup_frequency"), "set_cellular_noise_lookup_frequency", "get_cellular_noise_lookup_frequency");
 
-	// Textures
-
 	ClassDB::bind_method(D_METHOD("get_image", "width", "height", "invert"), &FastNoiseSIMD::get_image, DEFVAL(false));
 
 	BIND_ENUM_CONSTANT(TYPE_VALUE);
@@ -650,7 +650,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(FRACTAL_FBM);
 	BIND_ENUM_CONSTANT(FRACTAL_BILLOW);
-	BIND_ENUM_CONSTANT(FRACTAL_RIGID_MULTI);
+	BIND_ENUM_CONSTANT(FRACTAL_RIDGED_MULTI);
 
 	BIND_ENUM_CONSTANT(PERTURB_NONE);
 	BIND_ENUM_CONSTANT(PERTURB_GRADIENT);

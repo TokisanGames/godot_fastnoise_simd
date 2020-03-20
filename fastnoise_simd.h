@@ -28,8 +28,8 @@
 
 #include "core/image.h"
 #include "core/reference.h"
-#include "scene/resources/texture.h"
 #include "modules/noise/noise.h"
+#include "scene/resources/texture.h"
 
 #include "thirdparty/FastNoiseSIMD.h"
 
@@ -56,7 +56,7 @@ public:
 	enum FractalType {
 		FRACTAL_FBM = _FastNoiseSIMD::FBM,
 		FRACTAL_BILLOW = _FastNoiseSIMD::Billow,
-		FRACTAL_RIGID_MULTI = _FastNoiseSIMD::RigidMulti
+		FRACTAL_RIDGED_MULTI = _FastNoiseSIMD::RigidMulti
 	};
 
 	enum PerturbType {
@@ -115,28 +115,28 @@ public:
 
 	// Noise singular value functions (These are very slow. 1/3rd the speed of FastNoise.)
 
-	float get_noise_1d(float p_x);
+	float get_noise_1d(float p_z);
 	float get_noise_2dv(Vector2 p_v);
-	float get_noise_2d(float p_x, float p_y);
+	float get_noise_2d(float p_x, float p_z);
 	float get_noise_3dv(Vector3 p_v);
 	float get_noise_3d(float p_x, float p_y, float p_z);
 
 	// Noise set functions (There is a speed benefit if the Z channel is a multiple of 8.)
 
-	float* get_noise_set_1d(float p_x, int p_sizex);
-	float* get_noise_set_2dv(Vector2 p_v, Vector2 p_size);
-	float* get_noise_set_2d(float p_x, float p_y, int p_sizex, int p_sizey);
-	float* get_noise_set_3dv(Vector3 p_v, Vector3 p_size);
-	float* get_noise_set_3d(int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale = 0.0f);
-	float* get_empty_set_3dv(Vector3 p_size);
-	float* get_empty_set(int p_size);
-	void fill_noise_set_3dv(float* p_set, Vector3 p_v, Vector3 p_size, float p_scale = 0.0f);
-	void fill_noise_set_3d(float* p_set, int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale = 0.0f);
+	float *get_noise_set_1d(float p_z, int p_sizez, float p_scale = 0.0f);
+	float *get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale = 0.0f);
+	float *get_noise_set_2d(float p_x, float p_z, int p_sizex, int p_sizez, float p_scale = 0.0f);
+	float *get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale = 0.0f);
+	float *get_noise_set_3d(int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale = 0.0f);
+	float *get_empty_set_3dv(Vector3 p_size);
+	float *get_empty_set(int p_size);
+	void fill_noise_set_3dv(float *p_set, Vector3 p_v, Vector3 p_size, float p_scale = 0.0f);
+	void fill_noise_set_3d(float *p_set, int p_x, int p_y, int p_z, int p_sizex, int p_sizey, int p_sizez, float p_scale = 0.0f);
 	void free_noise_set(float *set);
 
 	// Allocate PoolVectors for GDScript
 
-	Vector<float> _b_get_noise_set_1d(float p_x, int p_sizex, float p_scale = 0.0f);
+	Vector<float> _b_get_noise_set_1d(float p_z, int p_sizez, float p_scale = 0.0f);
 	Vector<float> _b_get_noise_set_2dv(Vector2 p_v, Vector2 p_size, float p_scale = 0.0f);
 	Vector<float> _b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, float p_scale = 0.0f);
 
