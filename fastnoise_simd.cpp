@@ -495,6 +495,10 @@ Ref<Image> FastNoiseSIMD::get_image(int p_width, int p_height, bool p_invert) {
 	return image;
 }
 
+Ref<Image> FastNoiseSIMD::get_seamless_image(int p_width, int p_height, bool p_invert) {
+	return Noise::get_seamless_image(p_width, p_height, p_invert);
+}
+
 void FastNoiseSIMD::_bind_methods() {
 
 	// General settings
@@ -633,7 +637,10 @@ void FastNoiseSIMD::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_cellular_noise_lookup_frequency"), &FastNoiseSIMD::get_cellular_noise_lookup_frequency);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cellular_noise_lookup_frequency"), "set_cellular_noise_lookup_frequency", "get_cellular_noise_lookup_frequency");
 
+	// Textures
 	ClassDB::bind_method(D_METHOD("get_image", "width", "height", "invert"), &FastNoiseSIMD::get_image, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("get_seamless_image", "width", "height", "invert"), &FastNoiseSIMD::get_seamless_image, DEFVAL(false));
+
 
 	BIND_ENUM_CONSTANT(TYPE_VALUE);
 	BIND_ENUM_CONSTANT(TYPE_VALUE_FRACTAL);

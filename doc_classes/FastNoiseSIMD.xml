@@ -8,7 +8,7 @@
 	</tutorials>
 	<methods>
 		<method name="get_cellular_distance2_indices" qualifiers="const">
-			<return type="PoolIntArray">
+			<return type="PackedInt32Array">
 			</return>
 			<description>
 			</description>
@@ -72,7 +72,7 @@
 			</description>
 		</method>
 		<method name="get_noise_set_1d">
-			<return type="PoolRealArray">
+			<return type="PackedFloat32Array">
 			</return>
 			<argument index="0" name="z" type="float">
 			</argument>
@@ -84,7 +84,7 @@
 			</description>
 		</method>
 		<method name="get_noise_set_2dv">
-			<return type="PoolRealArray">
+			<return type="PackedFloat32Array">
 			</return>
 			<argument index="0" name="v" type="Vector2">
 			</argument>
@@ -96,13 +96,25 @@
 			</description>
 		</method>
 		<method name="get_noise_set_3dv">
-			<return type="PoolRealArray">
+			<return type="PackedFloat32Array">
 			</return>
 			<argument index="0" name="v" type="Vector3">
 			</argument>
 			<argument index="1" name="size" type="Vector3">
 			</argument>
 			<argument index="2" name="scale" type="float" default="0.0">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_seamless_image">
+			<return type="Image">
+			</return>
+			<argument index="0" name="width" type="int">
+			</argument>
+			<argument index="1" name="height" type="int">
+			</argument>
+			<argument index="2" name="invert" type="bool" default="false">
 			</argument>
 			<description>
 			</description>
