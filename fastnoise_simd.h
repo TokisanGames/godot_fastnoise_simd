@@ -110,7 +110,6 @@ public:
 	void set_scale(float p_scale);
 	float get_scale() const;
 
-	void set_simd_level(int p_level);
 	int get_simd_level() const;
 
 	// Noise singular value functions (These are very slow. 1/3rd the speed of FastNoise.)

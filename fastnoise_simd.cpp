@@ -123,11 +123,6 @@ float FastNoiseSIMD::get_scale() const {
 	return _scale;
 }
 
-void FastNoiseSIMD::set_simd_level(int p_level) {
-	_noise->SetSIMDLevel(p_level);
-	emit_changed();
-}
-
 int FastNoiseSIMD::get_simd_level() const {
 	return _noise->GetSIMDLevel();
 }
@@ -535,7 +530,6 @@ void FastNoiseSIMD::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_scale"), &FastNoiseSIMD::get_scale);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "scale"), "set_scale", "get_scale");
 
-	ClassDB::bind_method(D_METHOD("set_simd_level", "simd_level"), &FastNoiseSIMD::set_simd_level);
 	ClassDB::bind_method(D_METHOD("get_simd_level"), &FastNoiseSIMD::get_simd_level);
 
 	// Noise functions

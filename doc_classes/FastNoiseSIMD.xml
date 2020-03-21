@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="FastNoiseSIMD" inherits="Noise" version="3.2">
 	<brief_description>
+		Generates noise using the FastNoiseSIMD library.
 	</brief_description>
 	<description>
+		This class generates noise using the FastNoiseSIMD library, which is a collection of several noise algorithms including Cellular, Perlin, Value, and more.
+		SIMD means the library takes advantage of advanced instruction sets available in modern processors to accelerate noise generation. The highest level available is detected at runtime. See [method get_simd_level]. 
+		In order to take advantage of this hardware design, there are some caveats to follow:
+		* Noise generation will occur fastest when acquired in large blocks. Using the get_noise_set* functions instead of many individual lookups with the get_noise* functions will be considerably faster.
+		* There is a slight performance boost if the Z axis is a multiple of 8. For this reason, all noise lookup functions favor Z over the more common X axis.
+		Other Notes:
+		* Although some of the input parameters are floats or vectors, the back end library works in integer coordinates. Noise values are returned as floats.
+		* Most generated noise values are in the range of [code][-1,1][/code], however not always. Some of the cellular noise algorithms return results above [code]1[/code].
+		Example Code Usage:
+		This block of code will generate 4M floats (160^3) from the default Value noise in about 25ms on modern hardware.
+		[codeblock]
+		var fnoise = FastNoiseSIMD.new()
+		var time = OS.get_ticks_msec()
+		var ns = fnoise.get_noise_set_3dv(Vector3(0,0,0), Vector3(160,160,160))
+		print(OS.get_ticks_msec()-time, " ms")
+		[/codeblock]
+		This block of code will print out 8, 8x8 blocks of noise. Notice that the inner loop is the Z axis. The returned array is structured in Z,Y,X order.
+		[codeblock]
+		var fnoise = FastNoiseSIMD.new()
+		var ns = fnoise.get_noise_set_3dv(Vector3(0,0,0), Vector3(8,8,8), 100)
+		var i = 0
+		for x in range(0, 8):
+		    print("Set %d of 8" % [x+1])
+
+		    for y in range(0, 8):
+		        var row = ""
+
+		        for z in range(0, 8):
+		            row += ("%+.3f  " % ns[i])
+		            i += 1
+				
+		        print("%d: %s" % [y, row])
+
+		    print("----------")	
+		[/codeblock]
 	</description>
 	<tutorials>
 	</tutorials>
@@ -11,6 +47,7 @@
 			<return type="PoolIntArray">
 			</return>
 			<description>
+				Retrieve both indices used for the distance2 cellular noise calculation. See [member cellular_distance2_index0] and [member cellular_distance2_index1].
 			</description>
 		</method>
 		<method name="get_image">
@@ -21,8 +58,10 @@
 			<argument index="1" name="height" type="int">
 			</argument>
 			<argument index="2" name="invert" type="bool" default="false">
+                Invert the colors. White becomes black. Black becomes white.
 			</argument>
 			<description>
+				Returns a 2D [Image] generated from the current noise settings. Images are normalized, with black set to the lowest noise value, and white being the highest value.
 			</description>
 		</method>
 		<method name="get_noise_1d">
@@ -31,6 +70,8 @@
 			<argument index="0" name="z" type="float">
 			</argument>
 			<description>
+				Returns the 1D noise value at the given (z) coordinate. Specifically, it returns the value from a [code]1x1x1[/code] set located at [code]Vector3(0, 0, z)[/code]. 
+				Also see [member offset].
 			</description>
 		</method>
 		<method name="get_noise_2d">
@@ -41,6 +82,8 @@
 			<argument index="1" name="z" type="float">
 			</argument>
 			<description>
+				Returns the 2D noise value at the given (x,z) coordinates. Specifically, it returns the value from a [code]1x1x1[/code] 3D set located at [code]Vector3(x, 0, z)[/code]. 
+				Also see [member offset].
 			</description>
 		</method>
 		<method name="get_noise_2dv">
@@ -49,6 +92,7 @@
 			<argument index="0" name="v" type="Vector2">
 			</argument>
 			<description>
+				Alternative parameter format for [method get_noise_2d]. Though the second parameter of [Vector2] is [code]y[/code], in this function it is used as [code]z[/code].
 			</description>
 		</method>
 		<method name="get_noise_3d">
@@ -61,6 +105,8 @@
 			<argument index="2" name="z" type="float">
 			</argument>
 			<description>
+				Returns the 3D noise value at the given (x,z,z) coordinates. Specifically, it returns the value from a [code]1x1x1[/code] 3D set located at [code]Vector3(x, y, z)[/code]. 
+				Also see [member offset].
 			</description>
 		</method>
 		<method name="get_noise_3dv">
@@ -69,6 +115,7 @@
 			<argument index="0" name="v" type="Vector3">
 			</argument>
 			<description>
+				Alternative parameter format for [method get_noise_3d].
 			</description>
 		</method>
 		<method name="get_noise_set_1d">
@@ -81,6 +128,9 @@
 			<argument index="2" name="scale" type="float" default="0.0">
 			</argument>
 			<description>
+				Returns a 1D array of noise values based on the specified parameters. Specifically, it returns an array of 3D noise values from [code]Vector(0, 0, z)[/code] to [code]Vector(0, 0, z + size)[/code]. 
+				If scale is specified, it overrides the currenlty set [member scale] in this object. 
+				Also see [member offset].
 			</description>
 		</method>
 		<method name="get_noise_set_2dv">
@@ -93,6 +143,9 @@
 			<argument index="2" name="scale" type="float" default="0.0">
 			</argument>
 			<description>
+				Returns a 2D array of noise values based on the specified parameters. Specifically, it returns an array of 3D noise values from [code]Vector(v.x, 0, v.y)[/code] to [code]Vector(v.x+size.x, 0, v.y + size.y)[/code]. Note that the [code]y[/code] value of [Vector2] is assigned to [code]z[/code]. See the description above.
+				If scale is specified, it overrides the currenlty set [member scale] in this object. 
+				Also see [member offset].
 			</description>
 		</method>
 		<method name="get_noise_set_3dv">
@@ -105,6 +158,9 @@
 			<argument index="2" name="scale" type="float" default="0.0">
 			</argument>
 			<description>
+				Returns a 3D array of noise values based on the specified parameters. Specifically, it returns an array of 3D noise values from [code]Vector(v.x, v.y, v.z)[/code] to [code]Vector(v.x + size.x, v.y + size.y, v.z + size.z)[/code].
+				If scale is specified, it overrides the currenlty set [member scale] in this object. 
+				Also see [member offset].
 			</description>
 		</method>
 		<method name="get_seamless_image">
@@ -115,14 +171,26 @@
 			<argument index="1" name="height" type="int">
 			</argument>
 			<argument index="2" name="invert" type="bool" default="false">
+                Invert the colors. White becomes black. Black becomes white.
 			</argument>
 			<description>
+				Returns the results of the parent [Noise] get_seamless_image(), which calls [method get_image].
 			</description>
 		</method>
 		<method name="get_simd_level" qualifiers="const">
 			<return type="int">
 			</return>
 			<description>
+				Returns the highest detected SIMD level supported by the CPU.
+				The highest level is automatically detected and used. The levels are:
+				[codeblock]
+				0: Fallback, SIMD not supported
+				1: SSE2 (all Intel/AMD x64 processors support this at least)
+				2: SSE4.1
+				3: AVX2 & FMA3
+				4: AVX-512F
+				5: ARM NEON (some Android and IOS devices)
+				[/codeblock]
 			</description>
 		</method>
 		<method name="set_cellular_distance2_indices">
@@ -133,65 +201,82 @@
 			<argument index="1" name="index1" type="int">
 			</argument>
 			<description>
-			</description>
-		</method>
-		<method name="set_simd_level">
-			<return type="void">
-			</return>
-			<argument index="0" name="simd_level" type="int">
-			</argument>
-			<description>
+				Retrieve both indices used for the distance2 cellular noise calculation. See [member cellular_distance2_index0] and [member cellular_distance2_index1].
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="axis_scales" type="Vector3" setter="set_axis_scales" getter="get_axis_scales" default="Vector3( 1, 1, 1 )">
+			Scaling factor for axes. Each can be set individually. This setting can also be applied along with [member scale] and [member frequency] which provide similar effects.
 		</member>
 		<member name="cellular_dist_func" type="int" setter="set_cellular_distance_function" getter="get_cellular_distance_function" enum="FastNoiseSIMD.CellularDistanceFunction" default="0">
+			Distance function used in cellular noise calculations. See [enum CellularDistanceFunction].
 		</member>
 		<member name="cellular_distance2_index0" type="int" setter="set_cellular_distance2_index0" getter="get_cellular_distance2_index0" default="0">
+			The first distance index used for distance2 return types. Must be &gt;= [code]0[/code] and &gt; [member cellular_distance2_index1].
 		</member>
 		<member name="cellular_distance2_index1" type="int" setter="set_cellular_distance2_index1" getter="get_cellular_distance2_index1" default="1">
+			The second distance index used for distance2 return types. Must be &gt;= [code]0[/code] and &lt; [code]4[/code].
 		</member>
 		<member name="cellular_jitter" type="float" setter="set_cellular_jitter" getter="get_cellular_jitter" default="0.45">
+			Maximum distance a cellular point can move off of its grid position. Set to [code]0[/code] for an even grid.
 		</member>
 		<member name="cellular_noise_lookup_frequency" type="float" setter="set_cellular_noise_lookup_frequency" getter="get_cellular_noise_lookup_frequency" default="0.2">
+			The relative frequency on the cellular noise lookup return type.
 		</member>
 		<member name="cellular_noise_lookup_type" type="int" setter="set_cellular_noise_lookup_type" getter="get_cellular_noise_lookup_type" enum="FastNoiseSIMD.NoiseType" default="0">
+			The type of noise used if [member cellular_return_type] is set to NoiseLookup.
 		</member>
 		<member name="cellular_return_type" type="int" setter="set_cellular_return_type" getter="get_cellular_return_type" enum="FastNoiseSIMD.CellularReturnType" default="0">
+			The [enum CellularReturnType] from cellular noise calculations.
 		</member>
 		<member name="fractal_gain" type="float" setter="set_fractal_gain" getter="get_fractal_gain" default="0.5">
+			The octave gain for all fractal noise types.
 		</member>
 		<member name="fractal_lacunarity" type="float" setter="set_fractal_lacunarity" getter="get_fractal_lacunarity" default="2.0">
+			The octave lacunarity for all fractal noise types.
 		</member>
 		<member name="fractal_octaves" type="int" setter="set_fractal_octaves" getter="get_fractal_octaves" default="3">
+			The octave count for all fractal noise types.
 		</member>
 		<member name="fractal_type" type="int" setter="set_fractal_type" getter="get_fractal_type" enum="FastNoiseSIMD.FractalType" default="0">
+			The method for combining octaves in all [enum FractalType]s. 
 		</member>
 		<member name="frequency" type="float" setter="set_frequency" getter="get_frequency" default="0.01">
+			The frequency for all noise types. Similar to scaling and can also be applied along with [member axis_scales] and [member scale] for similar effects.
 		</member>
 		<member name="noise_type" type="int" setter="set_noise_type" getter="get_noise_type" enum="FastNoiseSIMD.NoiseType" default="0">
+			The noise algorithm used. See [enum NoiseType].
 		</member>
 		<member name="offset" type="Vector3" setter="set_offset" getter="get_offset" default="Vector3( 0, 0, 0 )">
+			Translate the noise input coordinates by the given [Vector3].
 		</member>
 		<member name="perturb_amplitude" type="float" setter="set_perturb_amplitude" getter="get_perturb_amplitude" default="1.0">
+			Perturb warps the noise input coordinates. This is the maximum warp distance applied.
 		</member>
 		<member name="perturb_fractal_gain" type="float" setter="set_perturb_fractal_gain" getter="get_perturb_fractal_gain" default="0.5">
+			The octave gain for perturb fractal types.
 		</member>
 		<member name="perturb_fractal_lacunarity" type="float" setter="set_perturb_fractal_lacunarity" getter="get_perturb_fractal_lacunarity" default="2.0">
+			The octave lacunarity for perturb fractal types.
 		</member>
 		<member name="perturb_fractal_octaves" type="int" setter="set_perturb_fractal_octaves" getter="get_perturb_fractal_octaves" default="3">
+			The octave count for perturb fractal types.
 		</member>
 		<member name="perturb_frequency" type="float" setter="set_perturb_frequency" getter="get_perturb_frequency" default="0.5">
+			Frequency of warping applied to input coordinates.
 		</member>
 		<member name="perturb_normalize_length" type="float" setter="set_perturb_normalize_length" getter="get_perturb_normalize_length" default="1.0">
+			The length of vectors after perturb normalizing.
 		</member>
 		<member name="perturb_type" type="int" setter="set_perturb_type" getter="get_perturb_type" enum="FastNoiseSIMD.PerturbType" default="0">
+			Method of warping input coordinates. See [enum PerturbType].
 		</member>
 		<member name="scale" type="float" setter="set_scale" getter="get_scale" default="1.0">
+			The scaling factor for the noise algorithm. Can be independently applied along with [member axis_scales] and [member frequency] which provide similar effects.
 		</member>
 		<member name="seed" type="int" setter="set_seed" getter="get_seed" default="0">
+			The random number seed for all noise types. 
 		</member>
 	</members>
 	<constants>
