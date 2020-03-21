@@ -204,7 +204,8 @@ public:
 
 	// Generate Textures
 
-	Ref<Image> get_image(int p_width, int p_height, bool p_invert) override;
+	Ref<Image> get_image(int p_width, int p_height, bool p_invert = false) override;
+	Ref<Image> get_seamless_image(int p_width, int p_height, bool p_invert = false) override;
 
 protected:
 	static void _bind_methods();

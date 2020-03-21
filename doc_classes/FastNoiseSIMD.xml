@@ -107,6 +107,18 @@
 			<description>
 			</description>
 		</method>
+		<method name="get_seamless_image">
+			<return type="Image">
+			</return>
+			<argument index="0" name="width" type="int">
+			</argument>
+			<argument index="1" name="height" type="int">
+			</argument>
+			<argument index="2" name="invert" type="bool" default="false">
+			</argument>
+			<description>
+			</description>
+		</method>
 		<method name="get_simd_level" qualifiers="const">
 			<return type="int">
 			</return>
