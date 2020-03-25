@@ -23,10 +23,10 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef REGISTER_FASTNOISE_SIMD_TYPES_H
-#define REGISTER_FASTNOISE_SIMD_TYPES_H
+#ifndef FASTNOISE_SIMD_REGISTER_TYPES_H
+#define FASTNOISE_SIMD_REGISTER_TYPES_H
 
 void register_fastnoise_simd_types();
 void unregister_fastnoise_simd_types();
 
-#endif //REGISTER_FASTNOISE_SIMD_TYPES_H
+#endif //FASTNOISE_SIMD_REGISTER_TYPES_H

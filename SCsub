@@ -70,7 +70,11 @@ else:
     env_thirdparty_sse2.Append(CCFLAGS=['-msse2'])
     env_thirdparty_sse4.Append(CCFLAGS=['-msse4.1'])
     env_thirdparty_avx2.Append(CCFLAGS=['-mavx2', '-march=core-avx2'])
-    env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f'])
+    if (env["target"] == "release"):	
+	# gcc 9.2.1 won't compile x64 with -O3
+	env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f', '-O2'])
+    else:
+	env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f'])
 
 # Add sources
 
