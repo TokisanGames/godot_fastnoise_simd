@@ -460,7 +460,6 @@ Ref<Image> FastNoiseSIMD::get_image(int p_width, int p_height, bool p_invert) {
 	// Get all values and identify min/max values
 	float min_val = 100;
 	float max_val = -100;
-
 	for (int i = 0; i < p_width * p_height; i++) {
 		if (noise_set[i] > max_val) {
 			max_val = noise_set[i];
@@ -471,17 +470,20 @@ Ref<Image> FastNoiseSIMD::get_image(int p_width, int p_height, bool p_invert) {
 	}
 
 	// Normalize values and write to texture
-	if (max_val != min_val) {
-		for (int x = 0; x < p_width * p_height; x++) {
-			uint8_t value = uint8_t((noise_set[x] - min_val) / (max_val - min_val) * 255.f);
-			if (p_invert) {
-				value = 255 - value;
-			}
-			wd8[x * 4 + 0] = value;
-			wd8[x * 4 + 1] = value;
-			wd8[x * 4 + 2] = value;
-			wd8[x * 4 + 3] = 255;
+	uint8_t value;
+	for (int x = 0; x < p_width * p_height; x++) {
+		if (max_val == min_val) {
+			value = 0;
+		} else {
+			value = uint8_t(CLAMP((noise_set[x] - min_val) / (max_val - min_val) * 255.f, 0, 255));
 		}
+		if (p_invert) {
+			value = 255 - value;
+		}
+		wd8[x * 4 + 0] = value;
+		wd8[x * 4 + 1] = value;
+		wd8[x * 4 + 2] = value;
+		wd8[x * 4 + 3] = 255;
 	}
 
 	free_noise_set(noise_set);
@@ -500,7 +502,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_noise_type", "type"), &FastNoiseSIMD::set_noise_type);
 	ClassDB::bind_method(D_METHOD("get_noise_type"), &FastNoiseSIMD::get_noise_type);
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "noise_type", PROPERTY_HINT_ENUM,
 						 "Value,ValueFractal,Perlin,PerlinFractal,Simplex,SimplexFractal,WhiteNoise,Cellular,Cubic,CubicFractal"),
 			"set_noise_type", "get_noise_type");
@@ -617,7 +619,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_cellular_noise_lookup_type", "type"), &FastNoiseSIMD::set_cellular_noise_lookup_type);
 	ClassDB::bind_method(D_METHOD("get_cellular_noise_lookup_type"), &FastNoiseSIMD::get_cellular_noise_lookup_type);
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cellular_noise_lookup_type", PROPERTY_HINT_ENUM,
 						 "Value,ValueFractal,Perlin,PerlinFractal,Simplex,SimplexFractal,WhiteNoise,Cellular,Cubic,CubicFractal"),
 			"set_cellular_noise_lookup_type", "get_cellular_noise_lookup_type");
@@ -635,12 +637,11 @@ void FastNoiseSIMD::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_image", "width", "height", "invert"), &FastNoiseSIMD::get_image, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("get_seamless_image", "width", "height", "invert"), &FastNoiseSIMD::get_seamless_image, DEFVAL(false));
 
-
 	BIND_ENUM_CONSTANT(TYPE_VALUE);
 	BIND_ENUM_CONSTANT(TYPE_VALUE_FRACTAL);
 	BIND_ENUM_CONSTANT(TYPE_PERLIN);
 	BIND_ENUM_CONSTANT(TYPE_PERLIN_FRACTAL);
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 	BIND_ENUM_CONSTANT(TYPE_SIMPLEX);
 	BIND_ENUM_CONSTANT(TYPE_SIMPLEX_FRACTAL);
 #endif

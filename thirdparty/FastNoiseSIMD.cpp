@@ -416,7 +416,7 @@ void _FastNoiseSIMD::FillNoiseSet(float* noiseSet, int xStart, int yStart, int z
 	case PerlinFractal:
 		FillPerlinFractalSet(noiseSet, xStart, yStart, zStart, xSize, ySize, zSize, scaleModifier);
 		break;
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 	case Simplex:
 		FillSimplexSet(noiseSet, xStart, yStart, zStart, xSize, ySize, zSize, scaleModifier);
 		break;
@@ -457,7 +457,7 @@ void _FastNoiseSIMD::FillNoiseSet(float* noiseSet, FastNoiseVectorSet* vectorSet
 	case PerlinFractal:
 		FillPerlinFractalSet(noiseSet, vectorSet, xOffset, yOffset, zOffset);
 		break;
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 	case Simplex:
 		FillSimplexSet(noiseSet, vectorSet, xOffset, yOffset, zOffset);
 		break;

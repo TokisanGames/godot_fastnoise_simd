@@ -24,11 +24,9 @@
 /*************************************************************************/
 
 #include "register_types.h"
-
 #include "fastnoise_simd.h"
 
 void register_fastnoise_simd_types() {
-
 	ClassDB::register_class<FastNoiseSIMD>();
 }
 
