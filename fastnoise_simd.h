@@ -203,8 +203,8 @@ public:
 
 	// Generate Textures
 
-	Ref<Image> get_image(int p_width, int p_height, bool p_invert = false) override;
-	Ref<Image> get_seamless_image(int p_width, int p_height, bool p_invert = false) override;
+	Ref<Image> get_image(int p_width, int p_height, bool p_invert = false);
+	Ref<Image> get_seamless_image(int p_width, int p_height, bool p_invert = false);
 
 protected:
 	static void _bind_methods();
@@ -222,10 +222,10 @@ private:
 	int _cell_dist_index1;
 };
 
-VARIANT_ENUM_CAST(FastNoiseSIMD::NoiseType)
-VARIANT_ENUM_CAST(FastNoiseSIMD::FractalType)
-VARIANT_ENUM_CAST(FastNoiseSIMD::PerturbType)
-VARIANT_ENUM_CAST(FastNoiseSIMD::CellularDistanceFunction)
-VARIANT_ENUM_CAST(FastNoiseSIMD::CellularReturnType)
+VARIANT_ENUM_CAST(FastNoiseSIMD::NoiseType);
+VARIANT_ENUM_CAST(FastNoiseSIMD::FractalType);
+VARIANT_ENUM_CAST(FastNoiseSIMD::PerturbType);
+VARIANT_ENUM_CAST(FastNoiseSIMD::CellularDistanceFunction);
+VARIANT_ENUM_CAST(FastNoiseSIMD::CellularReturnType);
 
 #endif // FASTNOISE_SIMD_H
