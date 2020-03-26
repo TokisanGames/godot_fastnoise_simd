@@ -1666,7 +1666,7 @@ switch(noiseLookupSettings.fractalType)\
 		break;\
 }}\
 
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 #define CELLULAR_LOOKUP_SINGLE(distanceFunc)\
 static SIMDf VECTORCALL FUNC(CellularLookup##distanceFunc##Single)(SIMDi seedV, SIMDf x, SIMDf y, SIMDf z, SIMDf cellJitter, const NoiseLookupSettings& noiseLookupSettings)\
 {\
@@ -1883,7 +1883,7 @@ static SIMDf VECTORCALL FUNC(CellularLookup##distanceFunc##Single)(SIMDi seedV, 
 	return result;\
 }
 
-#endif	//#ifdef ENABLE_SIMPLEX
+#endif	// SIMPLEX_ENABLED
 
 #define CELLULAR_DISTANCE_SINGLE(distanceFunc)\
 static SIMDf VECTORCALL FUNC(CellularDistance##distanceFunc##Single)(SIMDi seed, SIMDf x, SIMDf y, SIMDf z, SIMDf cellJitter)\

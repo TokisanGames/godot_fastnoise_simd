@@ -35,7 +35,7 @@
 // https://patents.google.com/patent/US6867776
 // The patent covers using the algorithm for generating textures with specific qualities.
 // Uncomment the line below to enable it and use at your own risk.
-#define ENABLE_SIMPLEX
+#define SIMPLEX_ENABLED
 
 #if defined(__arm__) || defined(__aarch64__)
 #define FN_ARM
@@ -108,7 +108,7 @@ class _FastNoiseSIMD
 {
 public:
 
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 	enum NoiseType { Value, ValueFractal, Perlin, PerlinFractal, Simplex, SimplexFractal, WhiteNoise, Cellular, Cubic, CubicFractal };
 #else
 	enum NoiseType { Value, ValueFractal, Perlin, PerlinFractal, WhiteNoise, Cellular, Cubic, CubicFractal };

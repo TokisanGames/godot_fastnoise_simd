@@ -70,11 +70,11 @@ else:
     env_thirdparty_sse2.Append(CCFLAGS=['-msse2'])
     env_thirdparty_sse4.Append(CCFLAGS=['-msse4.1'])
     env_thirdparty_avx2.Append(CCFLAGS=['-mavx2', '-march=core-avx2'])
-    if (env["target"] == "release"):	
-	# gcc 9.2.1 won't compile x64 with -O3
-	env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f', '-O2'])
+    if (env["target"] == "release"):
+        # gcc 9.2.1 won't compile x64 with -O3
+        env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f', '-O2'])
     else:
-	env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f'])
+        env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f'])
 
 # Add sources
 
@@ -91,4 +91,3 @@ elif env["platform"] == 'windows' or env["platform"] == 'x11' or env["platform"]
     env_thirdparty_avx512.add_source_files(env.modules_sources, thirdparty_sources_avx512)
 
 env_noise.add_source_files(env.modules_sources, "*.cpp")
-

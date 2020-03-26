@@ -34,7 +34,7 @@
 #include "thirdparty/FastNoiseSIMD.h"
 
 class FastNoiseSIMD : public Noise {
-	GDCLASS(FastNoiseSIMD, Noise)
+	GDCLASS(FastNoiseSIMD, Noise);
 	OBJ_SAVE_TYPE(FastNoiseSIMD);
 
 public:
@@ -43,7 +43,7 @@ public:
 		TYPE_VALUE_FRACTAL = _FastNoiseSIMD::ValueFractal,
 		TYPE_PERLIN = _FastNoiseSIMD::Perlin,
 		TYPE_PERLIN_FRACTAL = _FastNoiseSIMD::PerlinFractal,
-#ifdef ENABLE_SIMPLEX
+#ifdef SIMPLEX_ENABLED
 		TYPE_SIMPLEX = _FastNoiseSIMD::Simplex,
 		TYPE_SIMPLEX_FRACTAL = _FastNoiseSIMD::SimplexFractal,
 #endif
