@@ -493,6 +493,7 @@ Ref<Image> FastNoiseSIMD::get_image(int p_width, int p_height, bool p_invert) {
 }
 
 Ref<Image> FastNoiseSIMD::get_seamless_image(int p_width, int p_height, bool p_invert) {
+	// Just return parent function. This is here only so Godot will properly document this function.
 	return Noise::get_seamless_image(p_width, p_height, p_invert);
 }
 
