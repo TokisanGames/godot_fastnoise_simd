@@ -15,29 +15,29 @@
 		Example Code Usage:
 		This block of code will generate 4M floats (160^3) from the default Value noise in about 25ms on modern hardware.
 		[codeblock]
-		var fnoise = FastNoiseSIMD.new()
-		var time = OS.get_ticks_msec()
-		var ns = fnoise.get_noise_set_3dv(Vector3(0,0,0), Vector3(160,160,160))
-		print(OS.get_ticks_msec()-time, " ms")
+                    var fnoise = FastNoiseSIMD.new()
+                    var time = OS.get_ticks_msec()
+                    var ns = fnoise.get_noise_set_3dv(Vector3(0,0,0), Vector3(160,160,160))
+                    print(OS.get_ticks_msec()-time, " ms")
 		[/codeblock]
 		This block of code will print out 8, 8x8 blocks of noise. Notice that the inner loop is the Z axis. The returned array is structured in Z,Y,X order.
 		[codeblock]
-		var fnoise = FastNoiseSIMD.new()
-		var ns = fnoise.get_noise_set_3dv(Vector3(0,0,0), Vector3(8,8,8), 100)
-		var i = 0
-		for x in range(0, 8):
-		    print("Set %d of 8" % [x+1])
+                    var fnoise = FastNoiseSIMD.new()
+                    var ns = fnoise.get_noise_set_3dv(Vector3(0,0,0), Vector3(8,8,8), 100)
+                    var i = 0
+                    for x in range(0, 8):
+                        print("Set %d of 8" % [x+1])
 
-		    for y in range(0, 8):
-		        var row = ""
+                        for y in range(0, 8):
+                            var row = ""
 
-		        for z in range(0, 8):
-		            row += ("%+.3f  " % ns[i])
-		            i += 1
-				
-		        print("%d: %s" % [y, row])
+                            for z in range(0, 8):
+                                row += ("%+.3f  " % ns[i])
+                                i += 1
+                
+                            print("%d: %s" % [y, row])
 
-		    print("----------")	
+                        print("----------")    
 		[/codeblock]
 	</description>
 	<tutorials>
@@ -184,12 +184,12 @@
 				Returns the highest detected SIMD level supported by the CPU.
 				The highest level is automatically detected and used. The levels are:
 				[codeblock]
-				0: Fallback, SIMD not supported
-				1: SSE2 (all Intel/AMD x64 processors support this at least)
-				2: SSE4.1
-				3: AVX2 & FMA3
-				4: AVX-512F
-				5: ARM NEON (some Android and IOS devices)
+                                    0: Fallback, SIMD not supported
+                                    1: SSE2 (all Intel/AMD x64 processors support this at least)
+                                    2: SSE4.1
+                                    3: AVX2 &amp; FMA3
+                                    4: AVX-512F
+                                    5: ARM NEON (some Android and IOS devices)
 				[/codeblock]
 			</description>
 		</method>
