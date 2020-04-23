@@ -62,6 +62,7 @@ FastNoiseSIMD::~FastNoiseSIMD() {
 		_noise->FreeNoiseSet(_allocated_sets.front()->get());
 		_allocated_sets.pop_front();
 	}
+	delete _noise;
 }
 
 // General settings
