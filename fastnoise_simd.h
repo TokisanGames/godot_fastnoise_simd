@@ -208,6 +208,7 @@ public:
 
 protected:
 	static void _bind_methods();
+	virtual void _validate_property(PropertyInfo& property) const;
 
 private:
 	_FastNoiseSIMD *_noise;

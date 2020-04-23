@@ -70,6 +70,7 @@ FastNoiseSIMD::~FastNoiseSIMD() {
 void FastNoiseSIMD::set_noise_type(NoiseType p_noise_type) {
 	_noise->SetNoiseType((_FastNoiseSIMD::NoiseType)p_noise_type);
 	emit_changed();
+	_change_notify();		// For _validate_properties
 }
 
 FastNoiseSIMD::NoiseType FastNoiseSIMD::get_noise_type() const {
@@ -252,6 +253,7 @@ Vector<float> FastNoiseSIMD::_b_get_noise_set_3dv(Vector3 p_v, Vector3 p_size, f
 void FastNoiseSIMD::set_perturb_type(PerturbType p_type) {
 	_noise->SetPerturbType((_FastNoiseSIMD::PerturbType)p_type);
 	emit_changed();
+	_change_notify();		// For _validate_properties
 }
 
 FastNoiseSIMD::PerturbType FastNoiseSIMD::get_perturb_type() const {
@@ -550,6 +552,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	// Perturb
 
+	ADD_GROUP("Perturb", "perturb_");
 	ClassDB::bind_method(D_METHOD("set_perturb_type", "type"), &FastNoiseSIMD::set_perturb_type);
 	ClassDB::bind_method(D_METHOD("get_perturb_type"), &FastNoiseSIMD::get_perturb_type);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "perturb_type", PROPERTY_HINT_ENUM, "None,Gradient,Gradient_Fractal,Normalize,Gradient_Normalize,Gradient_Fractal_Normalize"), "set_perturb_type", "get_perturb_type");
@@ -580,6 +583,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	// Fractal
 
+	ADD_GROUP("Fractal", "fractal_");
 	ClassDB::bind_method(D_METHOD("set_fractal_type", "type"), &FastNoiseSIMD::set_fractal_type);
 	ClassDB::bind_method(D_METHOD("get_fractal_type"), &FastNoiseSIMD::get_fractal_type);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "fractal_type", PROPERTY_HINT_ENUM, "FBM,Billow,RidgedMulti"), "set_fractal_type", "get_fractal_type");
@@ -598,6 +602,7 @@ void FastNoiseSIMD::_bind_methods() {
 
 	// Cellular
 
+	ADD_GROUP("Cellular", "cellular_");
 	ClassDB::bind_method(D_METHOD("set_cellular_distance_function", "func"), &FastNoiseSIMD::set_cellular_distance_function);
 	ClassDB::bind_method(D_METHOD("get_cellular_distance_function"), &FastNoiseSIMD::get_cellular_distance_function);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cellular_dist_func", PROPERTY_HINT_ENUM, "Euclidean,Manhattan,Natural"), "set_cellular_distance_function", "get_cellular_distance_function");
@@ -676,4 +681,29 @@ void FastNoiseSIMD::_bind_methods() {
 	BIND_ENUM_CONSTANT(RETURN_DISTANCE2_DIV);
 	BIND_ENUM_CONSTANT(RETURN_DISTANCE2_CAVE);
 	BIND_ENUM_CONSTANT(RETURN_NOISE_LOOKUP);
+}
+
+void FastNoiseSIMD::_validate_property(PropertyInfo& property) const {
+	if (property.name.begins_with("cellular_") && get_noise_type() != TYPE_CELLULAR) {
+		property.usage = PROPERTY_USAGE_NOEDITOR;
+		return;
+	}
+
+	if (property.name.begins_with("fractal_")) {
+		switch (get_noise_type()) {
+			case TYPE_VALUE:
+			case TYPE_PERLIN:
+	#ifdef SIMPLEX_ENABLED
+			case TYPE_SIMPLEX:
+	#endif
+			case TYPE_WHITE_NOISE:
+			case TYPE_CELLULAR:
+			case TYPE_CUBIC:
+				if (get_perturb_type() != PERTURB_GRADIENT_FRACTAL &&
+					get_perturb_type() != PERTURB_GRADIENT_FRACTAL_NORMALIZE) {
+					property.usage = PROPERTY_USAGE_NOEDITOR;
+					return;
+				}
+		}
+	}
 }
