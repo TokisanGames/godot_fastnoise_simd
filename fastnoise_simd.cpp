@@ -26,7 +26,6 @@
 #include "fastnoise_simd.h"
 
 FastNoiseSIMD::FastNoiseSIMD() {
-
 	// Create a new FastNoiseSIMD for the highest supported instuction set of the CPU
 	_noise = _FastNoiseSIMD::NewFastNoiseSIMD();
 
@@ -704,6 +703,9 @@ void FastNoiseSIMD::_validate_property(PropertyInfo& property) const {
 					property.usage = PROPERTY_USAGE_NOEDITOR;
 					return;
 				}
+				break;
+			default:
+				break;
 		}
 	}
 }
