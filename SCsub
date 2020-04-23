@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-Import('env')
-Import('env_modules')
+Import("env")
+Import("env_modules")
 
 env_noise = env_modules.Clone()
 
@@ -9,36 +9,36 @@ thirdparty_dir = "thirdparty/"
 
 thirdparty_sources = [
     "FastNoiseSIMD.cpp",
-    "FastNoiseSIMD_internal.cpp"
+    "FastNoiseSIMD_internal.cpp",
 ]
 
 thirdparty_sources_sse2 = [
-    "FastNoiseSIMD_sse2.cpp"
+    "FastNoiseSIMD_sse2.cpp",
 ]
 
 thirdparty_sources_sse4 = [
-    "FastNoiseSIMD_sse41.cpp"
+    "FastNoiseSIMD_sse41.cpp",
 ]
 
 thirdparty_sources_avx2 = [
-    "FastNoiseSIMD_avx2.cpp"
+    "FastNoiseSIMD_avx2.cpp",
 ]
 
 thirdparty_sources_avx512 = [
-    "FastNoiseSIMD_avx512.cpp"
+    "FastNoiseSIMD_avx512.cpp",
 ]
 
 thirdparty_sources_arm = [
     "FastNoiseSIMD_neon.cpp",
-    "ARM/cpu-features.c"
+    "ARM/cpu-features.c",
 ]
 
-thirdparty_sources          = [thirdparty_dir + file for file in thirdparty_sources]
-thirdparty_sources_sse2     = [thirdparty_dir + file for file in thirdparty_sources_sse2]
-thirdparty_sources_sse4     = [thirdparty_dir + file for file in thirdparty_sources_sse4]
-thirdparty_sources_avx2     = [thirdparty_dir + file for file in thirdparty_sources_avx2]
-thirdparty_sources_avx512   = [thirdparty_dir + file for file in thirdparty_sources_avx512]
-thirdparty_sources_arm      = [thirdparty_dir + file for file in thirdparty_sources_arm]
+thirdparty_sources = [thirdparty_dir + file for file in thirdparty_sources]
+thirdparty_sources_sse2 = [thirdparty_dir + file for file in thirdparty_sources_sse2]
+thirdparty_sources_sse4 = [thirdparty_dir + file for file in thirdparty_sources_sse4]
+thirdparty_sources_avx2 = [thirdparty_dir + file for file in thirdparty_sources_avx2]
+thirdparty_sources_avx512 = [thirdparty_dir + file for file in thirdparty_sources_avx512]
+thirdparty_sources_arm = [thirdparty_dir + file for file in thirdparty_sources_arm]
 
 env_noise.Prepend(CPPPATH=[thirdparty_dir])
 
@@ -51,7 +51,7 @@ env_noise.Prepend(CPPPATH=[thirdparty_dir])
 env_thirdparty = env_noise.Clone()
 env_thirdparty.disable_warnings()
 if not env.msvc:
-    env_thirdparty.Append(CCFLAGS=['-Wno-shadow-local', '-Wno-unused-result'])
+    env_thirdparty.Append(CCFLAGS=["-Wno-shadow-local", "-Wno-unused-result"])
 
 env_thirdparty_sse2 = env_thirdparty.Clone()
 env_thirdparty_sse4 = env_thirdparty.Clone()
@@ -61,20 +61,20 @@ env_thirdparty_arm = env_thirdparty.Clone()
 
 if env.msvc:
     if (env["bits"] == "32"):
-        # MSVC/64 warns: ignoring unknown option '/arch:SSE2' as 64 bit already has SSE2 built in
-        env_thirdparty_sse2.Append(CCFLAGS=['/arch:SSE2'])  
-        env_thirdparty_sse4.Append(CCFLAGS=['/arch:SSE2'])
-    env_thirdparty_avx2.Append(CCFLAGS=['/arch:AVX2'])
-    env_thirdparty_avx512.Append(CCFLAGS=['/arch:AVX2'])
+        # MSVC/64 warns: ignoring unknown option "/arch:SSE2" as 64 bit already has SSE2 built in
+        env_thirdparty_sse2.Append(CCFLAGS=["/arch:SSE2"])  
+        env_thirdparty_sse4.Append(CCFLAGS=["/arch:SSE2"])
+    env_thirdparty_avx2.Append(CCFLAGS=["/arch:AVX2"])
+    env_thirdparty_avx512.Append(CCFLAGS=["/arch:AVX2"])
 else:
-    env_thirdparty_sse2.Append(CCFLAGS=['-msse2'])
-    env_thirdparty_sse4.Append(CCFLAGS=['-msse4.1'])
-    env_thirdparty_avx2.Append(CCFLAGS=['-mavx2', '-march=core-avx2'])
+    env_thirdparty_sse2.Append(CCFLAGS=["-msse2"])
+    env_thirdparty_sse4.Append(CCFLAGS=["-msse4.1"])
+    env_thirdparty_avx2.Append(CCFLAGS=["-mavx2", "-march=core-avx2"])
     if (env["target"] == "release"):
         # gcc 9.2.1 won't compile x64 with -O3
-        env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f', '-O2'])
+        env_thirdparty_avx512.Append(CCFLAGS=["-mavx512f", "-O2"])
     else:
-        env_thirdparty_avx512.Append(CCFLAGS=['-mavx512f'])
+        env_thirdparty_avx512.Append(CCFLAGS=["-mavx512f"])
 
 # Add sources
 
@@ -82,10 +82,10 @@ env_thirdparty.add_source_files(env.modules_sources, thirdparty_sources)
 env_thirdparty_sse2.add_source_files(env.modules_sources, thirdparty_sources_sse2)
 env_thirdparty_sse4.add_source_files(env.modules_sources, thirdparty_sources_sse4)
 
-if env["platform"] == 'android':
+if env["platform"] == "android":
     # Both Android and IOS have ARM chips, but only android build tools have necessary headers
     env_thirdparty_arm.add_source_files(env.modules_sources, thirdparty_sources_arm)
-elif env["platform"] == 'windows' or env["platform"] == 'x11' or env["platform"] == 'osx':
+elif env["platform"] == "windows" or env["platform"] == "x11" or env["platform"] == "osx":
     # AVX is supported on desktop only
     env_thirdparty_avx2.add_source_files(env.modules_sources, thirdparty_sources_avx2)
     env_thirdparty_avx512.add_source_files(env.modules_sources, thirdparty_sources_avx512)
