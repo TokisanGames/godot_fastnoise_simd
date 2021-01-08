@@ -34,7 +34,7 @@ FastNosieSIMD has been tested on these compilers:
 **Mingw-64/gcc is not supported** due to [1](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412) [2](https://sourceforge.net/p/mingw-w64/mailman/message/34453497/) [3](https://stackoverflow.com/questions/30928265/mingw64-is-incapable-of-32-byte-stack-alignment-required-for-avx-on-windows-x64) [4](https://github.com/msys2/MSYS2-packages/issues/1209), etc.
 So cross compiling from Linux to Windows using this compiler is not an option. That's why this module has not been included in the main Godot repository. 
 
-However you should be able to build it without issue on your own system or you can use my prebuilt Godot binaries (pending).
+However you should be able to build it without issue on your own system or you can use my prebuilt [Godot binaries](http://tokisan.com/godot-binaries/).
 
 These SIMD instruction sets are supported.
 * SSE2
